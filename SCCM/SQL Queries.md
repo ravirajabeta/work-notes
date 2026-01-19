@@ -41,8 +41,9 @@ Select distinct fcm.CollectionID,col.Name,col.MemberCount,fcm.Name,fcm.Domain,fc
 Select distinct fcm.CollectionID,col.Name,col.MemberCount,fcm.Name,fcm.Domain,fcm.SiteCode from v_FullCollectionMembership as fcm inner join v_Collection as col on fcm.CollectionID =col.CollectionID where col.CollectionID like'AA1002EA'
 Select distinct fcm.CollectionID,col.Name,col.MemberCount,fcm.Name,fcm.Domain,fcm.SiteCode from v_FullCollectionMembership as fcm inner join v_Collection as col on fcm.CollectionID =col.CollectionID where col.CollectionID like'AA1002EB'
 ```
+
 **<ins>SQL Query to get all the Applications assigned to specific collection with user experience settings</ins>**
- 
+ ```sql
 select AA.ApplicationName,coll.Name,coll.CollectionID as 'Collection Name',
 case when NotifyUser=1 then 'Yes' Else 'No' End as 'Notify User',
 case when UserUIExperience=1 then 'Yes' Else 'No' End as 'UserUIExperience',
@@ -53,9 +54,10 @@ where (AA.CollectionID=coll.CollectionID) and (AA.AssignmentID=ADS.AssignmentID)
 /*coll.CollectionID in ('AA1003F7',    'AA100608',    'SMSDM003') */
 coll.CollectionID like 'AA100608'
 and (AA.AssignmentName not like '%Software Update%' and AA.AssignmentName not like '%Endpoint Protection%')
+```
 
 **<ins>SQL Query to get Packages Assigned to specific collection:</ins>**
-
+ ```sql
 select * from v_Collection where Name like 'NewRelic(POC) All Locations' è Get the Collection ID
 select * from v_Collection where CollectionID like 'AA1005FA' è Get the Collection Name
 
@@ -64,9 +66,10 @@ adv.ProgramName,adv.ExpirationTime,case when AssignedScheduleEnabled=0 then 'Ava
 from v_Advertisement adv,v_Collection coll
 where adv.CollectionID=coll.CollectionID
 and coll.CollectionID = 'AA1005FA'
- 
-**<ins>SQL Query to get Application Deployment Status against a collection :</ins>**
+ ```
 
+**<ins>SQL Query to get Application Deployment Status against a collection :</ins>**
+ ```sql
 SELECT distinct
 CollectionName,
 vrs.Name0 [Computer Name],vrs.Client0 [SCCM Client] ,vrs.Client_Version0 [SCCM Client version],vgos.Caption0 [OS],vrs.User_Name0 [User Name],
@@ -92,8 +95,10 @@ ON vgos.ResourceID =vrs.ResourceID
 WHERE lac.DisplayName='PRD_WalkMe_Extension_x64'
 and CollectionName ='WalkMe-Install-RED-Machines'
 order by Status,[Computer Name]
+ ```
 
-**<ins> SQL Query to get the Deployment Summary for an Application/Package like the given name :</ins>**
+**<ins> SQL Query to get the Deployment Summary for an Application/Package like the given name :</ins>**  
+ ```sql
 select
     vapp.SoftwareName as 'Application',
     vapp.CollectionID as 'Deployment Collection',
@@ -114,10 +119,10 @@ join v_collection vc
     on vc.CollectionID = vapp.CollectionID
 Where vapp.SoftwareName like '%PRD_BLUE_Exploris58.16.90_JV%'
 order by SuccessRate
-
+ ```
 
 **<ins> SQL Query to get SCCM Client Version from All Systems collection :</ins>**
-
+ ```sql
 SELECT distinct
  SYS.Name0 as 'Machine Name',
  SYS.User_Name0 as 'Login ID',
@@ -135,14 +140,16 @@ SELECT distinct
  join v_Collection CN on FCM.CollectionID = CN.CollectionID
  join v_R_User USR on SYS.User_Name0 = USR.User_Name0
  WHERE CN.Name = 'All Systems' and sys.User_Domain0 = 'Retail'
+ ```
 
 **<ins> SQL Query to get name, client, domain & OS for a list of machines :</ins>**
-
+ ```sql
 Select Netbios_Name0,Client0,Client_Version0,Resource_Domain_OR_Workgr0,Operating_System_Name_and0 from v_R_System 
 where Netbios_Name0 in ('S07982REG1',    'S07982REG10',    'S07982REG11',    'S07982REG2',    'S07982REG3',    'S07982REG4',    'S07982REG5',    'S07982REG6',    'S07982REG7',    'S07982REG8',    'S07982REG9',    'S07985REG1',    'S07985REG2',    'S07985REG3',    'S07985REG4',    'S07985REG5',    'S07985REG6',    'S07985REG7',    'S07988REG1',    'S07988REG2',    'S07988REG3',    'S07988REG4',    'S07988REG5',    'S07988REG6',    'S07988REG7',    'S07988REG8',    'S08008REG1',    'S08008REG2',    'S08008REG3',    'S08008REG4',    'S08008REG5',    'S08008REG6',    'S08008REG7',    'S08008REG8',    'S08008REG9',    'S08432REG1',    'S08432REG2',    'S08432REG3',    'S08432REG4',    'S08432REG5',    'S08432REG6',    'S08432REG7',    'S08432REG9')
+ ```
 
 **<ins> SQL Query to find Windows 10 Version :</ins>**
-
+ ```sql
 select v_R_System.Name0 as 'Hostname',
 v_R_System.User_Name0 as 'System Username',
 v_R_System.Operating_System_Name_and0 as 'Operating System',
@@ -169,9 +176,10 @@ on v_R_System.ResourceID=v_GS_OPERATING_SYSTEM.ResourceID
 where v_R_System.Operating_System_Name_and0 like '%Microsoft Windows NT Workstation 10.0%'
 and v_R_System.Full_Domain_Name0 like '%RETAIL.ADVANCESTORES.COM%'
 order by v_R_System.Name0
+ ```
 
 **<ins> SQL Query to find Windows Version in a collection :</ins>**
-
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AA100949'
 select v_R_System.Name0 as 'Hostname',
@@ -202,9 +210,10 @@ inner join v_gs_operating_system on v_R_System.ResourceID=v_GS_OPERATING_SYSTEM.
 Inner Join v_FullCollectionMembership as Vfc on v_R_System.ResourceID=vfc.ResourceID
 where vfc.CollectionID = @CollectionID
 order by v_R_System.Name0
+ ```
 
 **<ins> SQL Query to find Windows Server Version :</ins>**
-
+ ```sql
 select v_R_System.Name0 as 'Hostname',
 v_R_System.User_Name0 as 'System Username',
 v_R_System.Operating_System_Name_and0 as 'Operating System',
@@ -230,14 +239,16 @@ on v_R_System.ResourceID=v_GS_OPERATING_SYSTEM.ResourceID
 where v_R_System.Operating_System_Name_and0 like '%Server%'
 and v_R_System.Full_Domain_Name0 like '%RETAIL.ADVANCESTORES.COM%'
 order by v_R_System.Operating_System_Name_and0, v_GS_OPERATING_SYSTEM.BuildNumber0
+ ```
 
 **<ins> SQL Query to find Primary device from the email address :</ins>**
-
+ ```sql
 select User_Name0,name0 from v_R_system where
 user_name0 in ('heather.jones','c.moralesalvarez','audrey.haisley','jonathon.young','chris.mitchell','jennifer.vigil','grayson.mcaden','pam.chambers','jim.york','lauren.marchionni','soumya.achanta','ryan.cundiff','sarah.duff','lauren.spinelli','mike.suh','asim.inam','cosette.suica','kristen.soler','jessica.mitory','mbyrd')
+ ```
 
 **<ins> SQL Query to find Free Disk Space :</ins>**
-
+ ```sql
 SELECT distinctSYS.Name,LDISK.Description0,LDISK.DeviceID0,LDISK.VolumeName0,LDISK.FileSystem0,LDISK.DriveType0,
 vrs.Operating_System_Name_and0,LDISK.Size0/1024 [Size(GB)],LDISK.FreeSpace0/1024 [FreeSpace(GB)],
 ((LDISK.FreeSpace0 *100)/(LDISK.Size0))[Free Space%]
@@ -249,9 +260,10 @@ WHERE LDISK.DriveType0 =3
 AND vrs.Resource_Domain_OR_Workgr0 like'RETAIL'
 AND sys.Name like'S0%REG%'
 order by[FreeSpace(GB)]
+ ```
 
 **<ins> SQL Query to get all PCs Information with IP address, subnet details, RAM </ins>**
-
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID ='SMS00001'
 Select
@@ -296,9 +308,10 @@ where vfc.CollectionID =@CollectionID
 and GNA.IPAddress0 is not null
 and vd.MediaType0 like 'Fixed hard disk media'
 order by [RAMSize (GB)]
+ ```
 
 **<ins> SQL Query to get Hard Disk information of a collection</ins>**
-
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AA100374'
 Select
@@ -317,8 +330,10 @@ left join v_GS_OPERATING_SYSTEM as VOS on vrs.ResourceID=vos.ResourceID
 where vfc.CollectionID = @CollectionID
 and VLD.Description0 like 'Local Fixed Disk'
 order by FreePercent
+ ```
 
 **<ins>Working Query to get Free Disk Space:</ins>**
+ ```sql
 Select DISTINCT
   SYS.Name0 as 'Computer Name',
   SYS.Operating_System_Name_and0 as 'Operating System',
@@ -338,9 +353,10 @@ Select DISTINCT
   AND SYS.Full_Domain_Name0 like '%Retail%'
   AND SYS.Name0 like's%'
 order by[Computer Name]
+ ```
 
 **<ins> SQL Query to find Last Heartbeat Time Stamp of SCCM Clients:</ins>**
-
+ ```sql
 Select
 vrs.Netbios_Name0 as 'ComputerName',
 vrs.Client0 as 'Client',
@@ -351,9 +367,10 @@ from v_R_System as Vrs innerjoin v_AgentDiscoveries as Vad on Vrs.ResourceID=Vad
 where vad.AgentName like '%Heartbeat Discovery'
 and vrs.Full_Domain_Name0 like '%retail%'
 Order by vad.AgentTime
+ ```
 
 **<ins> SQL Query to find IP Addresses of BLUE machines:</ins>**
-
+ ```sql
 Select vrs.Netbios_Name0,ip.IP_Addresses0,
 vrs.Operating_System_Name_and0,vrs.Full_Domain_Name0,vrs.Resource_Domain_OR_Workgr0
 from v_RA_System_IPAddresses ASIP
@@ -363,9 +380,10 @@ where vrs.Resource_Domain_OR_Workgr0 ISNOTNULL
 AND vrs.Full_Domain_Name0 ISNULL
 AND ip.IP_Addresses0 like'10%'
 order byvrs.Resource_Domain_OR_Workgr0,vrs.Netbios_Name0
+ ```
 
 **<ins> SQL Query to find Hardware Inv details and Client Version SQL Query:</ins>**
-
+ ```sql
 SELECT
 S.Name0 as Name,
 S.Client_Version0 as [Client Version],
@@ -389,7 +407,9 @@ join v_GS_PROCESSOR PR on S.ResourceID = PR.ResourceID
 WHERE LD.DeviceID0 ='C:'
 AND S.Name0 like's0%'
 GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.Model0,PB.SMBIOSBIOSVersion0,PR.Name0,PB.SerialNumber0
+ ```
 *****************************************************************
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AA100042'
 SELECT
@@ -418,9 +438,11 @@ Inner Join v_FullCollectionMembership as Vfc on S.ResourceID=vfc.ResourceID
 WHERE LD.DeviceID0 ='C:'
 AND vfc.CollectionID = @CollectionID
 GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.Model0,PB.SMBIOSBIOSVersion0,PR.Name0,S.Full_Domain_Name0,LD.DeviceID0,LD.Size0,LD.FreeSpace0,PB.SerialNumber0
+ ```
 *****************************************************************
 Updated Query with more details
 *****************************************************************
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AA100756'
 SELECT
@@ -478,10 +500,10 @@ join v_Collection CN on Vfc.CollectionID = CN.CollectionID
 WHERE LD.DeviceID0 ='C:'
 AND vfc.CollectionID = @CollectionID
 GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.Model0,PB.SMBIOSBIOSVersion0,PR.Name0,S.Full_Domain_Name0,LD.DeviceID0,LD.Size0,LD.FreeSpace0,PB.SerialNumber0,S.User_Name0,S.Operating_System_Name_and0,OS.BuildNumber0,S.Client0,CN.Name
-
+ ```
 
 **<ins> SQL Query to find ARP Entry against a collection ID:</ins>**
-
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AA100803'
 SELECT DISTINCT  
@@ -497,9 +519,10 @@ SELECT DISTINCT
  ARP.DisplayName0 LIKE '%Nessus%'
  AND FCM.CollectionID = @CollectionID
  ORDER BY Name0 ASC
- 
-**<ins> SQL Query to find OS, RAM, CPU, Cores & Hard Disk:</ins>**
+  ```
 
+**<ins> SQL Query to find OS, RAM, CPU, Cores & Hard Disk:</ins>**
+ ```sql
 SELECT
 S.Name0 as Name,
 OS.Caption0 as [Operating System],
@@ -524,9 +547,10 @@ WHERE LD.DeviceID0 ='C:'
 AND S.Name0 like's00%'
 GROUP BY S.Name0,OS.Caption0,CS.Manufacturer0,CS.Model0,PR.Name0,PR.NumberOfCores0,PR.NumberOfLogicalProcessors0,LD.Size0,LD.FreeSpace0,LD.DeviceID0
 ORDER BY S.Name0
+ ```
 
 **<ins> SQL Query to find Laptops, Desktops based on Chassis Type:</ins>**
-
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AA100026'
 SELECT
@@ -578,35 +602,37 @@ join v_Collection CN on Vfc.CollectionID = CN.CollectionID
 join v_GS_SYSTEM_ENCLOSURE ENC on ENC.ResourceID = VGS.ResourceID
 GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.Model0,PB.SMBIOSBIOSVersion0,PR.Name0,S.Full_Domain_Name0,LD.DeviceID0,LD.Size0,LD.FreeSpace0,PB.SerialNumber0,S.User_Name0,S.Operating_System_Name_and0,OS.BuildNumber0,S.Client0,VGS.SystemRole0,ENC.ChassisTypes0
 ORDER BY ChassisTypes0
-Chassis Type	Chassis Type value
-1	Other
-2	Unknown
-3	Desktop
-4	Low Profile Desktop
-5	Pizza Box
-6	Mini Tower
-7	Tower
-8	Portable
-9	Laptop
-10	Notebook
-11	Hand Held
-12	Docking Station
-13	All in One
-14	Sub Notebook
-15	Space-Saving
-16	Lunch Box
-17	Main System Chassis
-18	Expansion Chassis
-19	SubChassis
-20	Bus Expansion Chassis
-21	Peripheral Chassis
-22	Storage Chassis
-23	Rack Mount Chassis
-24	Sealed-Case PC
+ ```
+| Chassis Type | Chassis Type value |  
+| :------------ |   :---:       |
+1 |	Other
+2 |	Unknown
+3 |	Desktop
+4 |	Low Profile Desktop
+5 |	Pizza Box
+6 |	Mini Tower
+7 |	Tower
+8 |	Portable
+9 |	Laptop
+10 |	Notebook
+11 |	Hand Held
+12 |	Docking Station
+13 |	All in One
+14 |	Sub Notebook
+15 |	Space-Saving
+16 |	Lunch Box
+17 |	Main System Chassis
+18 |	Expansion Chassis
+19 |	SubChassis
+20 |	Bus Expansion Chassis
+21 |	Peripheral Chassis
+22 |	Storage Chassis
+23 |	Rack Mount Chassis
+24 |	Sealed-Case PC
 
 
 **<ins> List clients with hardware inventory scans more than five days old against a collection ID:</ins>**
-
+ ```sql
 DECLARE @CollectionID varchar(8)
 SET @CollectionID = 'AA100026'
 SELECT SYS.Netbios_Name0 as 'Computer Name', 
@@ -631,10 +657,10 @@ INNER JOIN v_CollectionMemberClientBaselineStatus as vcc on vcc.MachineID = vrs.
 INNER JOIN v_Collection as col on fcm.CollectionID = col.CollectionID 
 where col.CollectionID like'AA10094C'
 ORDER BY vrs.Netbios_Name0
-
+ ```
 
 **<ins> SQL Query to get the PostGre tables in descending:</ins>**
-
+ ```sql
 SELECT *, pg_size_pretty(total_bytes) AS total
 , pg_size_pretty(index_bytes) AS INDEX
 , pg_size_pretty(toast_bytes) AS toast
@@ -652,10 +678,11 @@ FROM (
       WHERE relkind = 'r'
   ) a
 ) a ORDER BY total_bytes DESC;
+ ```
 
 **<ins> SQL Query to get SCCM application and deployment information :</ins>**
+ ```sql
 Select distinct
- 
     Apps.DisplayName,
     DT.DisplayName AS [DeploymentTypeName],
     DT.Technology,
@@ -671,7 +698,7 @@ Select distinct
     --,ISNULL(DT.SDMPackageDigest.value('(/AppMgmtDigest/DeploymentType/Installer/UninstallAction/Args/Arg[@Name="InstallCommandLine"])[1]','nvarchar(MAX)'), 'None') AS  [UninstallCommand]
     ,aa.CollectionName
     ,aa.AssignmentName
- 
+
     From fn_ListApplicationCIs(1033) Apps
 Left Join fn_ListDeploymentTypeCIs(1033) DT ON DT.AppModelName = Apps.ModelName
 Left join vFolderMembers fm on apps.ModelName     = fm.InstanceKey 
@@ -686,9 +713,10 @@ left join v_ApplicationAssignment aa on aa.ApplicationName = apps.DisplayName
  
  
 Where Apps.IsLatest = 1 AND DT.IsLatest = 1 AND HasContent = 1 AND PriorityInLatestApp = 1 AND (fm.ObjectTypeName = N'SMS_ApplicationLatest' ) and aa.AssignmentName is not null
+ ```
 
 **<ins> SQL Query to find days since Last Communication for a collection:</ins>**
-
+ ```sql
 Declare @CollectionID varchar(8)
 set @CollectionID = 'AAP001FD'
 SELECT 
@@ -714,5 +742,5 @@ WHERE
     AND fcm.CollectionID = @CollectionID
 ORDER BY 
     DaysSinceLastCommunication DESC;
-
+ ```
 
