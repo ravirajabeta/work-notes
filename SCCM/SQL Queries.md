@@ -505,6 +505,56 @@ AND vfc.CollectionID = @CollectionID
 GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.Model0,PB.SMBIOSBIOSVersion0,PR.Name0,S.Full_Domain_Name0,LD.DeviceID0,LD.Size0,LD.FreeSpace0,PB.SerialNumber0,S.User_Name0,S.Operating_System_Name_and0,OS.BuildNumber0,S.Client0,CN.Name
  ```
 
+*****************************************************************
+Updated Hardware Inv Query with TPM Check
+*****************************************************************
+ ```sql
+DECLARE @CollectionID varchar(8)
+SET @CollectionID = 'AAP0001C'
+SELECT
+    S.Name0 AS [Name],
+    OS.Caption0 AS [Operating System],
+    CS.Manufacturer0 AS [Manufacturer],
+    CS.Model0 AS [Model],
+    PR.Name0 AS [CPU],
+    PR.NumberOfCores0 AS [Number Of Cores],
+    PR.NumberOfLogicalProcessors0 AS [Number Of Logical Processors],
+    SUM(PM.Capacity0 / 1024.0) AS [Memory (GB)],
+    LD.DeviceID0 AS [Drive],
+    LD.Size0 / 1024.0 AS [Disk Size (GB)],
+    LD.FreeSpace0 / 1024.0 AS [Free Space (GB)],
+    MAX(TPM.SpecVersion0) AS [TPM Spec Version]            -- e.g., "2.0", "1.2"
+    -- If you also want vendor firmware version, uncomment the next line:
+    -- , MAX(TPM.ManufacturerVersion0) AS [TPM Firmware Version]
+FROM
+    v_R_System S
+JOIN v_GS_OPERATING_SYSTEM OS ON S.ResourceID = OS.ResourceID
+JOIN v_GS_PHYSICAL_MEMORY PM ON S.ResourceID = PM.ResourceID
+JOIN v_GS_COMPUTER_SYSTEM CS ON S.ResourceID = CS.ResourceID
+JOIN v_GS_LOGICAL_DISK LD ON S.ResourceID = LD.ResourceID
+JOIN v_GS_PC_BIOS PB ON S.ResourceID = PB.ResourceID
+JOIN v_GS_PROCESSOR PR ON S.ResourceID = PR.ResourceID
+join v_FullCollectionMembership as VFC ON VFC.ResourceID = S.ResourceID
+LEFT JOIN v_GS_TPM TPM ON S.ResourceID = TPM.ResourceID    -- TPM inventory
+WHERE
+    LD.DeviceID0 = 'C:' 
+    AND VFC.CollectionID = @CollectionID
+	AND 
+GROUP BY
+    S.Name0,
+    OS.Caption0,
+    CS.Manufacturer0,
+    CS.Model0,
+    PR.Name0,
+    PR.NumberOfCores0,
+    PR.NumberOfLogicalProcessors0,
+    LD.Size0,
+    LD.FreeSpace0,
+    LD.DeviceID0
+ORDER BY
+    [TPM Spec Version];
+ ```
+
 **<ins> SQL Query to find ARP Entry against a collection ID:</ins>**
  ```sql
 Declare @CollectionID varchar(8)
