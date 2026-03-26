@@ -456,6 +456,11 @@ S.Operating_System_Name_and0 as 'Operating System Family',
 OS.Caption0 as [Operating System],
 OS.BuildNumber0 as 'Build Number',
 Case
+when OS.BuildNumber0 = '26200' then 'Windows 11 25H2'
+when OS.BuildNumber0 = '26100' then 'Windows 11 24H2'
+when OS.BuildNumber0 = '22631' then 'Windows 11 23H2'
+when OS.BuildNumber0 = '22621' then 'Windows 11 22H2'
+when OS.BuildNumber0 = '22000' then 'Windows 11 21H2'
 when OS.BuildNumber0 = '19045' then 'Windows 10 22H2'
 when OS.BuildNumber0 = '19044' then 'Windows 10 21H2'
 when OS.BuildNumber0 = '19043' then 'Windows 10 21H1'
