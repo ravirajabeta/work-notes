@@ -443,7 +443,7 @@ AND vfc.CollectionID = @CollectionID
 GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.Model0,PB.SMBIOSBIOSVersion0,PR.Name0,S.Full_Domain_Name0,LD.DeviceID0,LD.Size0,LD.FreeSpace0,PB.SerialNumber0
  ```
 *****************************************************************
-Updated Query with more details
+Updated Hardware Inventory Query with more details
 *****************************************************************
  ```sql
 Declare @CollectionID varchar(8)
@@ -511,7 +511,7 @@ GROUP BY S.ResourceID,S.Name0,S.Client_Version0,OS.Caption0,CS.Manufacturer0,CS.
  ```
 
 *****************************************************************
-Updated Hardware Inv Query with TPM Check
+Updated Hardware Inventory Query with TPM Check
 *****************************************************************
  ```sql
 DECLARE @CollectionID varchar(8)
@@ -544,7 +544,6 @@ LEFT JOIN v_GS_TPM TPM ON S.ResourceID = TPM.ResourceID    -- TPM inventory
 WHERE
     LD.DeviceID0 = 'C:' 
     AND VFC.CollectionID = @CollectionID
-	AND 
 GROUP BY
     S.Name0,
     OS.Caption0,
